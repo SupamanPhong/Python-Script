@@ -1,0 +1,68 @@
+# FPT edit
+
+
+def parse_f5_get_time(msg):
+    res = re.search(r'\d{2}:\d{2}:\d{2}', msg)
+    if (res != None):
+        return res.group(1)
+    else:
+        return ""
+
+def parse_f5_get_response(msg):
+    res = re.search(r'SECEV.*?[.] ', msg)
+    if (res != None):
+        return res.group(1).replace("\\n", "\n")
+    else:
+        return ""
+
+def parse_f5_get_http_method(msg):
+    res = re.search(r'HTTP protocol compliance sub violations.*?[,]', msg)
+    if (res != None):
+        return res.group(1)
+    else:
+        return ""
+
+def parse_f5_get_source(msg):
+    res = re.search(r'source ip.*?[,]', msg)
+    if (res != None):
+        return res.group(1).replace("\\n", "\n")
+    else:
+        return ""
+
+def parse_f5_get_des(msg):
+    res = re.search(r'destination ip.*?[,]', msg)
+    if (res != None):
+        return res.group(1).replace("\\n", "\n")
+    else:
+        return ""
+
+
+def parse_f5_get_request(msg):
+    res = re.search(r'request.*?[,] ', msg)
+    if (res != None):
+        return res.group(1)
+    else:
+        return ""
+
+
+
+def parse_f5_get_id(msg):
+    default = 2000000001
+    res = re.search(r'\s\[id\s\"(.*?)\"\]', msg)
+    id_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+               11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+               21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+               31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+               41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 1000]
+    if (res != None):
+        try:
+            tmp = int(res.group(1).replace("\\n", "\n"))
+            if (tmp in id_list):
+                return tmp
+            else:
+                return default
+        except Exception as e:
+            return default
+    else:
+        return default
+
