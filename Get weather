@@ -1,0 +1,9 @@
+import sys, requests, json
+location = str(sys.argv)
+print(location)
+url = 'http://api.openweathermap.org/data/2.5/forecast/daily?q=%s&cnt=3&appid=c3133288d2c20763002f19cb45781785' %(location)
+weather = requests.get(url)
+print(weather)
+print(weather.text)
+print(type(weather.text))
+weatherjson=json.loads(weather.text)
