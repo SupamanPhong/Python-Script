@@ -1,0 +1,143 @@
+#!/usr/bin/python
+#Audit Linux System
+#JustAteam
+#IceWall
+
+import commands
+from socket import *
+
+execute = commands.getoutput
+
+def _check_permission():
+	print "\n\t\tCHECKING PERMISSION\n"
+	if 'root' in execute("id"):
+		print "+)You are running as root"
+	else:
+		print "+)This script is running by: " + execute("whoami")
+		print "+)You have to run this script as root"
+		exit()
+
+def _system_info():
+	print "\n\t\tSYSTEM INFORMATION\n"
+	print "+)Operating-System: " + execute('lsb_release -d | cut -f2')
+	print "+)Kernel-version: " + execute('uname -r')
+	de = execute('echo $XDG_CURRENT_DESKTOP')
+	if de:
+		print "+)Desktop-environment: " + de
+	else:
+		print "+)Desktop-environment: Not found"
+	print "+)Current-time: " + execute('date')
+	print "+)Logged-users: " + execute('users')
+
+def _get_user():
+	print "\n\t\tUSER GATHERING (/etc/passwd)\n"
+	# Get all users with sudo permision
+	root_user = execute("grep '^sudo:.*$' /etc/group | cut -d: -f4").split("\n")
+	if root_user:
+		print "+)Sudo: " + ' '.join(root_user)
+	else:
+		print "+)Sudo: Not found"
+	
+	# Get all users without sudo permission
+	login_user = execute("awk -F'[/:]' '{if ($3 >= 1000 && $3 != 65534) print $1}' /etc/passwd").split("\n")
+	# Remove users already in sudo group
+	login_user = set(login_user) - set(root_user)
+	
+	if login_user:
+		print "+)Normal: " + ' '.join(login_user)
+	else:
+		print "+)Normal: Not found"
+	#Get uncommon users
+	com_user = ['daemon', 'bin', 'sys', 'sync', 'games', 'man', 'lp', 'mail', 'news', 'uucp', 'proxy', 'backup', 'list', 'gnats', 'nobody', '_apt', 'systemd-timesync', 'systemd-network', 'systemd-resolve', 'systemd-bus-proxy', 'uuidd']
+	uncom_user = execute("awk -F':' '{ print $1}' /etc/passwd").split("\n")
+	#Remove all other user
+	uncom_user = set(uncom_user) - set(root_user) - set(login_user) - set(com_user)
+	if uncom_user:
+		print "+)Uncommon:\n" + ' '.join(uncom_user)
+	else:
+		print "+)Uncommon: Not found"
+
+def _get_sudoers():
+	print "\n\t\tSUDOERS\n"
+	suUser = []
+	suGroup = []
+	sudoU = execute("cat /etc/sudoers | grep ALL").split('\n')
+	if sudoU:
+		for i in range(len(sudoU)):
+			sudoU[i] = sudoU[i].replace('\tALL=(ALL:ALL) ALL', '')
+			if '%' in sudoU[i]:
+				suGroup.append(sudoU[i])
+			else:
+				suUser.append(sudoU[i])
+		if suGroup:
+			print "+)Group: " + (' '.join(suGroup)).replace('%', '')
+		else:
+			print "+)Group: Not found"
+		if suUser:
+			print "+)User: " + ' '.join(suUser)
+		else:
+			print "+)User: Not found"
+	else:
+		print "+)Nothing found"
+
+def _get_port():
+	print "\n\t\tNETWORK INFORMATION\n"
+	#get all current IP in all interfaces
+	ip = execute("hostname -I").split(" ")
+	if ip:
+		print "+)IP address: " + ' '.join(ip)
+		for i in range(len(ip)):
+			if ip[i]:
+				print "\t-)Getting openning port on " + ip[i]
+				port_scan(str(ip[i]))
+	else:
+		print "+)IP address: Network error"
+
+def port_scan(host):
+	open_port = ""
+	for port in range(1, 20000):
+		try:
+			scan = socket(AF_INET, SOCK_STREAM)
+			scan.connect((host,port))
+			open_port += str(port) + " "
+			scan.close()
+		except:
+			pass
+	if open_port:
+		print "\t\t" + host + ": " + open_port
+	else:
+		print "\t\t" + host + ": No port is openning"
+
+def _get_hosts():
+	print "\n\t\tHOSTS GATHERING\n"
+	print execute("cat /etc/hosts | grep '\.'")
+
+def _get_services():
+	print "\n\t\tSERVICE GATHERING\n"
+	running = execute("service --status-all | grep '+'")
+	print "+)Running services: \n" + running
+	startup = execute("ls /etc/init.d").split('\n')
+	common = ['README', 'bootmisc.sh', 'atd', 'checkfs.sh', 'checkroot-bootclean.sh', 'checkroot.sh','console-setup.sh', 'hostname.sh', 'keyboard-setup.sh','mountall-bootclean.sh', 'mountall.sh', 'mountdevsubfs.sh', 'mountkernfs.sh', 'mountnfs-bootclean.sh', 'mountnfs.sh', 'umountnfs.sh']
+	startup = set(startup) - set(common)
+	print "\n+)Startup services: \n" + ' '.join(startup)
+
+def _get_cron():
+	print "\n\t\tGETTING CRON LIST\n"
+	listCron = execute("ls /etc/cron.d/") 
+	listCron += execute("ls /etc/cron.daily")
+	listCron += execute("ls /etc/cron.hourly/")
+	listCron += execute("ls /etc/cron.weekly")
+	listCron += execute("ls /etc/cron.monthly")
+	if listCron:
+		print "+)Cron-List:\n" + listCron.replace('\n', ' ')
+	else:
+		print "+)Cron-List: Not found"
+
+_check_permission()
+_system_info()
+_get_user()
+_get_sudoers()
+_get_port()
+_get_hosts()
+_get_services()
+_get_cron()
