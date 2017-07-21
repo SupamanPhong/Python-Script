@@ -1,6 +1,10 @@
 import os
 import json
+import choice
 from flask import Flask, request, jsonify
+import random
+import math
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -10,10 +14,55 @@ def hello():
 @app.route('/fimapi')
 def summary():
     list = [
-        {"url_image": "http://topanhdep.net/wp-content/uploads/2017/01/hinh-anh-tiep-vien-hang-khong-17.jpg"}
-        
+        {"url_image": "http://topanhdep.net/wp-content/uploads/2017/01/hinh-anh-tiep-vien-hang-khong-17.jpg"},
+        {"url_image": "http://topanhdep.net/wp-content/uploads/2017/01/hinh-anh-tiep-vien-hang-khong-1.jpg"},
+        {"url_image": "http://topanhdep.net/wp-content/uploads/2017/01/hinh-anh-tiep-vien-hang-khong-4.jpg"},
+        {
+	      "url_image": "http://topanhdep.net/wp-content/uploads/2017/01/hinh-anh-tiep-vien-hang-khong-6.jpg",
+	    },
+	    {
+	      "url_image": "http://topanhdep.net/wp-content/uploads/2017/01/hinh-anh-tiep-vien-hang-khong-12.jpg",
+	    },
+	    {
+	      "url_image": "http://topanhdep.net/wp-content/uploads/2017/01/hinh-anh-tiep-vien-hang-khong-16.jpg",
+	    },
+	    {
+	      "url_image": "http://topanhdep.net/wp-content/uploads/2017/01/hinh-anh-tiep-vien-hang-khong-18.jpg",
+	    },
+	    {
+	      "url_image": "http://topanhdep.net/wp-content/uploads/2017/01/hinh-anh-tiep-vien-hang-khong-10.jpg",
+	    },
+	    {
+	      "url_image": "http://topanhdep.net/wp-content/uploads/2017/01/hinh-anh-tiep-vien-hang-khong-13.jpg",
+	    },
+	    {
+	      "url_image": "http://topanhdep.net/wp-content/uploads/2017/01/hinh-anh-tiep-vien-hang-khong-7.jpg",
+	    },
+	    {
+	      "url_image": "http://topanhdep.net/wp-content/uploads/2015/12/anh-girl-xinh-gai-dep-98-14.jpg",
+	    },
+	    {
+	      "url_image": "http://topanhdep.net/wp-content/uploads/2015/12/anh-girl-xinh-gai-dep-98-18.jpg",
+	    },
+	    {
+	      "url_image": "http://topanhdep.net/wp-content/uploads/2015/12/anh-girl-xinh-gai-dep-98-3.jpg",
+	    },
+	    {
+	      "url_image": "http://topanhdep.net/wp-content/uploads/2015/12/anh-girl-xinh-gai-dep-98-11.jpg",
+	    },
+	    {
+	      "url_image": "http://topanhdep.net/wp-content/uploads/2015/12/anh-girl-xinh-gai-dep-98-6.jpg",
+	    },
+	    {
+	      "url_image": "http://topanhdep.net/wp-content/uploads/2015/12/anh-girl-xinh-gai-dep-98-12.jpg",
+	    }
     ]
-    return jsonify(results=list)
+    
+    rand_item = list[random.randrange(len(list))]
+    return jsonify(results=rand_item)
+    
+   
+    
     
 if __name__ == '__main__':    
     app.run(host=os.getenv('IP', '0.0.0.0'),port=int(os.getenv('PORT', 8080)))
