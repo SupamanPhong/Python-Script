@@ -1,0 +1,19 @@
+from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw
+import textwrap
+
+MAX_W, MAX_H = 640, 1280
+title = "Phong sieu nhan dep trai nguy hem than thanh ahhihihi "
+lines = textwrap.wrap(title, width=25)
+img = Image.open("C:\\Users\\Supaman\\Pictures\\picture\\anh1.png",)
+draw = ImageDraw.Draw(img)
+font = ImageFont.truetype("C:\\Users\\Supaman\\Pictures\\picture\\arial.ttf",80)
+print (lines)
+current_h,pad = 180,100
+for line in lines:
+    w, h = draw.textsize(title)
+    draw.text(((MAX_W - w) / 2, current_h), line, font=font)
+    current_h += h + pad
+
+img.save('output.png')
