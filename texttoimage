@@ -1,19 +1,37 @@
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
-import textwrap
+import textwrap,sys
 
-MAX_W, MAX_H = 640, 1280
-title = "Phong sieu nhan dep trai nguy hem than thanh ahhihihi "
-lines = textwrap.wrap(title, width=25)
-img = Image.open("C:\\Users\\Supaman\\Pictures\\picture\\anh1.png",)
+W, H = 1280, 1280
+title = sys.argv[1]
+noidung = sys.argv[2]
+img = Image.open("C:\\Users\\Test\\Pictures\\picture\\anh1.png",)
 draw = ImageDraw.Draw(img)
-font = ImageFont.truetype("C:\\Users\\Supaman\\Pictures\\picture\\arial.ttf",80)
-print (lines)
-current_h,pad = 180,100
-for line in lines:
-    w, h = draw.textsize(title)
-    draw.text(((MAX_W - w) / 2, current_h), line, font=font)
-    current_h += h + pad
+font = ImageFont.truetype("C:\\Users\\Test\\Pictures\\picture\\arial.ttf", 80)
+linestitle = textwrap.wrap(title, width=30)
+linesnoidung = textwrap.wrap(noidung, width=30)
+#text_x, text_y = font.getsize(title)
 
+
+#draw.text ( (x,180), title, font=font )
+print(linestitle)
+def intieude() :
+    h,pad = 180,100
+    for line in linestitle:
+        text_x,text_y= font.getsize(line)
+        x = (W - text_x) / 2
+        draw.text((x, h), line, font=font)
+        h = h + pad
+    print("Đã thêm tiêu đề")
+def innoidung():
+    h, pad = 400, 100
+    for line in linesnoidung:
+        text_x, text_y = font.getsize(line)
+        x = (W - text_x) / 2
+        draw.text((x, h), line, font=font)
+        h = h + pad
+    print("Đã thêm tiêu đề")
+intieude()
+innoidung()
 img.save('output.png')
