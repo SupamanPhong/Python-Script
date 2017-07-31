@@ -1,0 +1,24 @@
+import os
+import json
+import choice
+from flask import Flask, request, jsonify
+import random
+import math
+
+app = Flask(__name__)
+@app.route('/')
+def hello():
+    return 'OK'
+
+@app.route('/fimapi')
+def summary():
+    
+    random_lines = random.choice(open("gaixinh.json").readlines()).split('\n')
+    str1 = ''.join(random_lines)
+    image = {'url_image': str1}
+    return jsonify(data=image)
+
+
+    
+if __name__ == '__main__':    
+    app.run(host=os.getenv('IP', '0.0.0.0'),port=int(os.getenv('PORT', 8080)))
