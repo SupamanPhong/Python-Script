@@ -1,0 +1,10 @@
+import xlsxwriter
+workbook = xlsxwriter.Workbook('input.xlsx')
+worksheet = workbook.add_worksheet()
+PM2Line = (1,2,3,4,5,6,7,8)
+row = 0
+col = 1
+for item in PM2Line:
+    worksheet.write(row, col, item)
+    row += 1
+workbook.close()
