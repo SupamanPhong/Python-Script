@@ -1,0 +1,18 @@
+import smtplib
+from email.mime.text import MIMEText
+to = ['sender0','sender1']
+gmail_user = 'user'
+gmail_pwd = 'pass'
+smtpserver = smtplib.SMTP("smtp server",587)
+smtpserver.ehlo()
+smtpserver.starttls()
+smtpserver.ehlo
+smtpserver.login(gmail_user, gmail_pwd)
+msg = MIMEText("""Phong dep trai """)
+msg['Subject'] = "Phong dep trai hon Ngoc Anh"
+msg['From'] = gmail_user
+#msg = header + '\n Neu ban doc duoc dong nay nghia la phong dep trai hon ngoc anh \n\n'
+msg['To'] = ", ".join(to)
+smtpserver.sendmail(gmail_user, to , msg.as_string())
+print('done!')
+smtpserver.close()
