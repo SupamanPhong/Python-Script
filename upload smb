@@ -1,0 +1,5 @@
+import smbclient
+smb = smbclient.SambaClient(server="1111", share="Public", username='fuck', password='', domain='fuck')
+#print smb.listdir("/")
+print os.getcwd()
+smb.upload(u'fucktoan.txt', u"/fucktoan.txt")
